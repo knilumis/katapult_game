@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hamit'in Oyunu</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #commands {
+            margin-bottom: 20px;
+        }
+
+        #buttons {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+        }
+
+        button {
+            font-size: 18px;
+            padding: 10px 20px;
+            margin: 5px;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div id="commands">
+            <p id="command-text">ARM ET MISSION'A AL</p>
+        </div>
+        <div id="buttons">
+            <button id="green-button" disabled>Yeşil</button>
+            <button id="red-button" disabled>Kırmızı</button>
+            <button id="fire-button" disabled>Fire</button>
+        </div>
+        <button id="start-button">ARM MISSION</button>
+        <div id="result"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
