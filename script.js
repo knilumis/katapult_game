@@ -13,6 +13,16 @@ greenButton.disabled = true;
 redButton.disabled = true;
 fireButton.disabled = true;
 
+// Arka plan müziğini yükle
+const backgroundMusic = new Audio('background.mp3');
+backgroundMusic.loop = true; // Müziğin sürekli çalması için döngüye al
+
+// Başarısızlık ses efektini yükle
+const failSound = new Audio('fail.mp3');
+
+// Başarı ses efektini yükle
+const successSound = new Audio('succ.mp3');
+
 startButton.addEventListener('click', startGame);
 greenButton.addEventListener('click', () => handleUserInput('green'));
 redButton.addEventListener('click', () => handleUserInput('red'));
@@ -25,6 +35,12 @@ function startGame() {
     resultDiv.textContent = '';
     commandText.textContent = '';
     startButton.disabled = true;
+    startButton.textContent = "ARM MISSION"; // Başlatma tuşunun ismini başlangıçta ayarla
+    if (backgroundMusic.paused) {
+        backgroundMusic.play().catch((error) => {
+            console.error('Otomatik oynatma hatası:', error);
+        });
+    }
     generateCommands();
     enableColorButtons(); // Yeşil ve kırmızı tuşları etkinleştir
 }
@@ -100,9 +116,12 @@ function handleFire() {
 
     if (correctSteps >= 8) { // En az 8 doğru basış gerekli
         resultDiv.textContent = `ATIŞ BAŞARILI DELİ KALKTI !!!!`;
+        successSound.play(); // Başarı ses efektini çal
     } else {
         resultDiv.textContent = `ATIŞ BAŞARISIZ KATAPULT PATLADI :(`;
+        failSound.play(); // Başarısızlık ses efektini çal
     }
 
     startButton.disabled = false;
+    startButton.textContent = "TEKRAR ARM ET"; // Oyun bitince tuş ismini değiştir
 }
