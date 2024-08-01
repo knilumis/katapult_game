@@ -13,6 +13,7 @@
             justify-content: center;
             height: 100vh;
             margin: 0;
+            position: relative;
         }
 
         #game-container {
@@ -49,14 +50,32 @@
             margin-top: 20px;
             font-size: 24px;
         }
+
+        #level-text {
+            margin-bottom: 10px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        #command-text {
+            transition: left 0.3s, top 0.3s; /* Komut metninin pozisyon değişiklikleri için animasyon */
+        }
+
+        #sliders-container {
+            display: none;
+            width: 100%;
+            text-align: left;
+        }
     </style>
 </head>
 <body>
     <div id="game-container">
+        <div id="level-text">LEVEL 1</div>
         <div id="commands">
             <img src="hamit-head.png" alt="Hamit">
             <p id="command-text">ARM ET MISSION'A AL</p>
         </div>
+        <div id="sliders-container"></div>
         <div id="buttons">
             <button id="green-button" disabled>Yeşil</button>
             <button id="red-button" disabled>Kırmızı</button>
