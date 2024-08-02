@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.5">
     <title>KATAPULT WARS 2</title>
     <link rel="stylesheet" href="styles.css">
     <style>
@@ -66,6 +66,38 @@
             width: 100%;
             text-align: left;
         }
+
+        #dino-game-container {
+            display: none;
+            width: 500%;
+            height: 300px;
+            position: relative;
+            background: #f7f7f7;
+            overflow: hidden;
+        }
+
+        .dino {
+            width: 50px;
+            height: 50px;
+            background: url('hamit-head.png') no-repeat center center;
+            background-size: cover;
+            position: absolute;
+            bottom: 0;
+            left: 50px;
+        }
+
+        .cactus {
+            width: 60px;
+            height: 60px;
+            background: green;
+            position: absolute;
+            bottom: 0;
+        }
+
+        .game-over {
+            font-size: 48px;
+            color: red;
+        }
     </style>
 </head>
 <body>
@@ -83,6 +115,10 @@
         </div>
         <button id="start-button">ARM MISSION</button>
         <div id="result"></div>
+        <div id="dino-game-container">
+            <div id="dino" class="dino"></div>
+            <div id="cactus" class="cactus"></div>
+        </div>
     </div>
     <script src="script.js"></script>
 </body>

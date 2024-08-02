@@ -3,6 +3,7 @@ let userInputs = [];
 let currentStep = 0;
 let currentLevel = 1;
 let success = false;
+let cactusCount = 0;
 
 const commandText = document.getElementById('command-text');
 const greenButton = document.getElementById('green-button');
@@ -12,6 +13,7 @@ const startButton = document.getElementById('start-button');
 const resultDiv = document.getElementById('result');
 const levelText = document.getElementById('level-text');
 const slidersContainer = document.getElementById('sliders-container');
+const dinoGameContainer = document.getElementById('dino-game-container');
 
 greenButton.disabled = true;
 redButton.disabled = true;
@@ -39,6 +41,7 @@ startButton.addEventListener('click', startGame);
 greenButton.addEventListener('click', () => handleUserInput('green'));
 redButton.addEventListener('click', () => handleUserInput('red'));
 fireButton.addEventListener('click', handleFire);
+dinoGameContainer.addEventListener('click', jump);
 
 function startGame() {
     if (success) {
@@ -48,10 +51,11 @@ function startGame() {
     commands = [];
     userInputs = [];
     currentStep = 0;
+    cactusCount = 0;
     resultDiv.textContent = '';
     commandText.textContent = '';
     if (currentLevel === 3) {
-        levelText.textContent = "Katapult Ayaklarını Gerekli Sıkılığa Ayarla";
+        levelText.textContent = "LEVEL 3";
     } else {
         levelText.textContent = `LEVEL ${currentLevel}`;
     }
@@ -66,6 +70,7 @@ function startGame() {
         startLevel3();
     } else {
         slidersContainer.style.display = 'none';
+        dinoGameContainer.style.display = 'none';
         greenButton.style.display = 'inline-block';
         redButton.style.display = 'inline-block';
         generateCommands();
@@ -141,135 +146,121 @@ function handleUserInput(color) {
 }
 
 function handleFire() {
-    if (currentLevel === 3) {
-        checkLevel3();
-    } else {
-        greenButton.disabled = true;
-        redButton.disabled = true;
-        fireButton.disabled = true;
+    greenButton.disabled = true;
+    redButton.disabled = true;
+    fireButton.disabled = true;
 
-        let correctSteps = 0; // correctSteps'i sıfırla
+    let correctSteps = 0; // correctSteps'i sıfırla
 
-        // Kullanıcının basışlarını doğru sırayla kontrol et
-        for (let i = 0; i < commands.length; i++) {
-            if (commands[i] === userInputs[i]) {
-                correctSteps++;
-            }
+    // Kullanıcının basışlarını doğru sırayla kontrol et
+    for (let i = 0; i < commands.length; i++) {
+        if (commands[i] === userInputs[i]) {
+            correctSteps++;
         }
-
-        if (correctSteps >= Math.floor(commands.length * 0.9)) { // En az %90 doğru basış gerekli
-            resultDiv.textContent = `ATIŞ BAŞARILI DELİ KALKTI !!!!`;
-            successSound.play(); // Başarı ses efektini çal
-            success = true; // Başarı durumunu ayarla
-            startButton.textContent = "SONRAKİ SEVİYE"; // Başarı durumunda tuş ismini değiştir
-        } else {
-            const randomFailureMessage = failureMessages[Math.floor(Math.random() * failureMessages.length)];
-            resultDiv.textContent = randomFailureMessage;
-            failSound.play(); // Başarısızlık ses efektini çal
-            success = false; // Başarısızlık durumunu ayarla
-            startButton.textContent = "TEKRAR DENEME"; // Başarısızlık durumunda tuş ismini değiştir
-        }
-
-        fireButton.disabled = true; // Fire tuşunu devre dışı bırak
-        startButton.disabled = false;
     }
+
+    if (correctSteps >= Math.floor(commands.length * 0.9)) { // En az %90 doğru basış gerekli
+        resultDiv.textContent = `ATIŞ BAŞARILI DELİ KALKTI !!!!`;
+        successSound.play(); // Başarı ses efektini çal
+        success = true; // Başarı durumunu ayarla
+        startButton.textContent = "SONRAKİ SEVİYE"; // Başarı durumunda tuş ismini değiştir
+    } else {
+        const randomFailureMessage = failureMessages[Math.floor(Math.random() * failureMessages.length)];
+        resultDiv.textContent = randomFailureMessage;
+        failSound.play(); // Başarısızlık ses efektini çal
+        success = false; // Başarısızlık durumunu ayarla
+        startButton.textContent = "TEKRAR DENEME"; // Başarısızlık durumunda tuş ismini değiştir
+    }
+
+    fireButton.disabled = true; // Fire tuşunu devre dışı bırak
+    startButton.disabled = false;
 }
 
 function startLevel3() {
     greenButton.style.display = 'none';
     redButton.style.display = 'none';
-    slidersContainer.innerHTML = ''; // Mevcut sliderları temizle
-    slidersContainer.style.display = 'block'; // Sliderlar için konteyneri görünür yap
-
-    for (let i = 0; i < 4; i++) {
-        const targetValue = Math.floor(Math.random() * 101);
-        const sliderWrapper = document.createElement('div');
-        sliderWrapper.style.display = 'flex';
-        sliderWrapper.style.alignItems = 'center';
-        sliderWrapper.style.flexDirection = 'column';
-        sliderWrapper.style.marginBottom = '20px';
-        sliderWrapper.style.width = '100%';
-
-        const targetText = document.createElement('span');
-        targetText.textContent = `Hedef: %${targetValue}`;
-        targetText.style.marginBottom = '10px';
-
-        const ruler = document.createElement('div');
-        ruler.style.display = 'flex';
-        ruler.style.justifyContent = 'space-between';
-        ruler.style.width = '100%';
-        for (let j = 0; j <= 100; j += 20) {
-            const mark = document.createElement('span');
-            mark.textContent = `%${j}`;
-            ruler.appendChild(mark);
-        }
-
-        const slider = document.createElement('input');
-        slider.type = 'range';
-        slider.min = 0;
-        slider.max = 100;
-        slider.value = 50; // Başlangıçta ortada başlat
-        slider.style.width = '100%';
-
-        sliderWrapper.appendChild(targetText);
-        sliderWrapper.appendChild(ruler);
-        sliderWrapper.appendChild(slider);
-        slidersContainer.appendChild(sliderWrapper);
-
-        commands.push(targetValue);
-        userInputs.push(slider);
-    }
-
-    let countdown = 13;
-    commandText.textContent = `ATIŞA SON: ${countdown} saniye`;
-    fireButton.disabled = false; // Fire tuşunu etkinleştir
-
-    const countdownInterval = setInterval(() => {
-        countdown--;
-        commandText.textContent = `ATIŞA SON: ${countdown} saniye`;
-        if (countdown === 0) {
-            clearInterval(countdownInterval);
-            fireButton.disabled = true; // Süre dolduğunda fire tuşunu devre dışı bırak
-            checkLevel3(true); // Süre dolduğunda otomatik olarak başarısız say
-        }
-    }, 1000);
+    slidersContainer.style.display = 'none';
+    dinoGameContainer.style.display = 'block'; // Dino game için konteyneri görünür yap
+    initializeDinoGame();
 }
 
-function checkLevel3(timeUp = false) {
-    fireButton.disabled = true; // Fire tuşunu devre dışı bırak
+function initializeDinoGame() {
+    // Dino Game'i burada kodlayacağız
+    const dino = document.getElementById('dino');
+    const cactus = document.getElementById('cactus');
+    let isJumping = false;
 
-    if (timeUp) {
-        resultDiv.textContent = "ATIŞ BAŞARISIZ! PERVANE AYAKLARA ÇARPTI :(";
-        failSound.play(); // Başarısızlık ses efektini çal
-        success = false; // Başarısızlık durumunu ayarla
-        startButton.textContent = "TEKRAR DENEME"; // Başarısızlık durumunda tuş ismini değiştir
-        startButton.disabled = false;
-        return;
+    function jump() {
+        if (isJumping) return;
+        isJumping = true;
+        let position = 0;
+
+        let upInterval = setInterval(() => {
+            if (position >= 150) {
+                clearInterval(upInterval);
+                let downInterval = setInterval(() => {
+                    if (position <= 0) {
+                        clearInterval(downInterval);
+                        isJumping = false;
+                    } else {
+                        position -= 20;
+                        dino.style.bottom = position + 'px';
+                    }
+                }, 60); // Daha uzun süre havada kalma
+            } else {
+                position += 20;
+                dino.style.bottom = position + 'px';
+            }
+        }, 60); // Daha uzun süre havada kalma
     }
 
-    let allCorrect = true;
-    const tolerance = 5; // Hata payı
-
-    for (let i = 0; i < userInputs.length; i++) {
-        const userValue = parseInt(userInputs[i].value);
-        const targetValue = commands[i];
-        if (userValue < targetValue - tolerance || userValue > targetValue + tolerance) {
-            allCorrect = false;
-            break;
+    document.addEventListener('keydown', function(event) {
+        if (event.code === 'Space') {
+            jump();
         }
+    });
+
+    dinoGameContainer.addEventListener('click', jump);
+
+    let isGameOver = false;
+
+    function createCactus() {
+        let cactusPosition = 1000;
+        let randomTime = Math.random() * 6000;
+
+        cactus.classList.add('cactus');
+        cactus.style.left = cactusPosition + 'px';
+        dinoGameContainer.appendChild(cactus);
+
+        let leftInterval = setInterval(() => {
+            if (cactusPosition < -60) {
+                clearInterval(leftInterval);
+                cactus.classList.remove('cactus');
+                cactusCount++;
+                if (cactusCount >= 10) {
+                    resultDiv.textContent = `LEVEL 3 BAŞARILI!`;
+                    successSound.play(); // Başarı ses efektini çal
+                    success = true; // Başarı durumunu ayarla
+                    startButton.textContent = "SONRAKİ SEVİYE"; // Başarı durumunda tuş ismini değiştir
+                    startButton.disabled = false; // Level 4'e geçiş
+                    return;
+                }
+            } else if (cactusPosition > 0 && cactusPosition < 60 && !isJumping) {
+                clearInterval(leftInterval);
+                isGameOver = true;
+                resultDiv.textContent = "ATIŞ BAŞARISIZ! PERVANE AYAKLARA ÇARPTI :(";
+                failSound.play(); // Başarısızlık ses efektini çal
+                success = false; // Başarısızlık durumunu ayarla
+                startButton.textContent = "TEKRAR DENEME"; // Başarısızlık durumunda tuş ismini değiştir
+                startButton.disabled = false;
+            } else {
+                cactusPosition -= 5; // Hızı düşür
+                cactus.style.left = cactusPosition + 'px';
+            }
+        }, 20);
+
+        if (!isGameOver && cactusCount < 10) setTimeout(createCactus, randomTime);
     }
 
-    if (allCorrect) {
-        resultDiv.textContent = `LEVEL 3 BAŞARILI!`;
-        successSound.play(); // Başarı ses efektini çal
-        success = true; // Başarı durumunu ayarla
-        startButton.textContent = "OYUN BİTTİ"; // Başarı durumunda tuş ismini değiştir
-        startButton.disabled = true; // Oyun bittikten sonra startButton devre dışı bırakılır
-    } else {
-        resultDiv.textContent = "ATIŞ BAŞARISIZ! PERVANE AYAKLARA ÇARPTI :(";
-        failSound.play(); // Başarısızlık ses efektini çal
-        success = false; // Başarısızlık durumunu ayarla
-        startButton.textContent = "TEKRAR DENEME"; // Başarısızlık durumunda tuş ismini değiştir
-        startButton.disabled = false;
-    }
+    createCactus();
 }
