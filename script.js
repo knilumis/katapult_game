@@ -1,7 +1,7 @@
 let commands = [];
 let userInputs = [];
 let currentStep = 0;
-let currentLevel = 1;
+let currentLevel = 1; // LEVEL 3'ü doğrudan başlatmak için başlangıç değeri 3 olarak ayarlandı
 let success = false;
 let cactusCount = 0;
 
@@ -12,6 +12,7 @@ const fireButton = document.getElementById('fire-button');
 const startButton = document.getElementById('start-button');
 const resultDiv = document.getElementById('result');
 const levelText = document.getElementById('level-text');
+const levelDescription = document.getElementById('level-description');
 const slidersContainer = document.getElementById('sliders-container');
 const dinoGameContainer = document.getElementById('dino-game-container');
 
@@ -52,12 +53,18 @@ function startGame() {
     userInputs = [];
     currentStep = 0;
     cactusCount = 0;
+    clearCacti(); // Kaktüsleri sıfırla
     resultDiv.textContent = '';
     commandText.textContent = '';
-    if (currentLevel === 3) {
+    if (currentLevel === 1) {
+        levelText.textContent = "LEVEL 1";
+        levelDescription.textContent = "Hamit'in söylediği konumlara sırasıyla bas!";
+    } else if (currentLevel === 2) {
+        levelText.textContent = "LEVEL 2";
+        levelDescription.textContent = "Hamit'in söylediği konumları takip et ve bas!";
+    } else if (currentLevel === 3) {
         levelText.textContent = "LEVEL 3";
-    } else {
-        levelText.textContent = `LEVEL ${currentLevel}`;
+        levelDescription.textContent = "Pervane'nin ayaklara çarpmasını engelle!";
     }
     startButton.disabled = true;
     startButton.textContent = "ARM MISSION"; // Başlatma tuşunun ismini başlangıçta ayarla
@@ -185,9 +192,7 @@ function startLevel3() {
 }
 
 function initializeDinoGame() {
-    // Dino Game'i burada kodlayacağız
     const dino = document.getElementById('dino');
-    const cactus = document.getElementById('cactus');
     let isJumping = false;
 
     function jump() {
@@ -196,7 +201,7 @@ function initializeDinoGame() {
         let position = 0;
 
         let upInterval = setInterval(() => {
-            if (position >= 150) {
+            if (position >= 120) {
                 clearInterval(upInterval);
                 let downInterval = setInterval(() => {
                     if (position <= 0) {
@@ -226,16 +231,17 @@ function initializeDinoGame() {
 
     function createCactus() {
         let cactusPosition = 1000;
-        let randomTime = Math.random() * 6000;
+        let randomTime = Math.random() * 2100;
 
+        const cactus = document.createElement('div');
         cactus.classList.add('cactus');
         cactus.style.left = cactusPosition + 'px';
         dinoGameContainer.appendChild(cactus);
 
         let leftInterval = setInterval(() => {
-            if (cactusPosition < -60) {
+            if (cactusPosition < -40) {
                 clearInterval(leftInterval);
-                cactus.classList.remove('cactus');
+                cactus.remove();
                 cactusCount++;
                 if (cactusCount >= 10) {
                     resultDiv.textContent = `LEVEL 3 BAŞARILI!`;
@@ -245,7 +251,7 @@ function initializeDinoGame() {
                     startButton.disabled = false; // Level 4'e geçiş
                     return;
                 }
-            } else if (cactusPosition > 0 && cactusPosition < 60 && !isJumping) {
+            } else if (cactusPosition > 0 && cactusPosition < 40 && !isJumping) {
                 clearInterval(leftInterval);
                 isGameOver = true;
                 resultDiv.textContent = "ATIŞ BAŞARISIZ! PERVANE AYAKLARA ÇARPTI :(";
@@ -254,13 +260,25 @@ function initializeDinoGame() {
                 startButton.textContent = "TEKRAR DENEME"; // Başarısızlık durumunda tuş ismini değiştir
                 startButton.disabled = false;
             } else {
-                cactusPosition -= 5; // Hızı düşür
+                cactusPosition -= 10; // Hızı artır
                 cactus.style.left = cactusPosition + 'px';
             }
-        }, 20);
+        }, 15);
 
         if (!isGameOver && cactusCount < 10) setTimeout(createCactus, randomTime);
     }
 
     createCactus();
+}
+
+function clearCacti() {
+    const cacti = document.querySelectorAll('.cactus');
+    cacti.forEach(cactus => cactus.remove());
+}
+
+// Sayfa yüklendiğinde doğrudan LEVEL 3'ü başlat
+window.onload = function() {
+    levelText.textContent = "LEVEL 3";
+    levelDescription.textContent = "Pervane'nin ayaklara çarpmasını engelle!";
+    startLevel3();
 }
